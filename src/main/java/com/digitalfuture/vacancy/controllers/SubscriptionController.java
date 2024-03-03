@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
 @RestController
@@ -19,7 +20,7 @@ public class SubscriptionController {
     }
 
     @PutMapping
-    public ResponseEntity<?> subscribeCandidate(@PathVariable @Email String email){
+    public ResponseEntity<?> subscribeCandidate(@Email @Valid @RequestParam(name = "email") String email){
         return subscribeService.subscribeCandidate(email) ?
                 ResponseEntity.status(200).build():
                 ResponseEntity.status(HttpStatus.NOT_FOUND).build();

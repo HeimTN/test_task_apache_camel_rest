@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Pattern;
 import java.util.Collection;
 
 @RestController
@@ -25,11 +24,13 @@ public class VacancyController {
                 ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
     @GetMapping
-    public ResponseEntity<Collection<VacancyDTO>> getCollectionVacancy(@PathVariable @Pattern(regexp = "name|position|city") String filter,
-                                                                       @PathVariable String key){
-        Collection<VacancyDTO> result = filter != null ?
-                                            vacancyService.getFilteredCollectionVacancy(filter, key):
-                                            vacancyService.getCollectionVacancy();
+    public ResponseEntity<Collection<VacancyDTO>> getCollectionVacancy(@RequestParam(name = "name", required = false) String name,
+                                                                       @RequestParam(name = "position", required = false) String position,
+                                                                       @RequestParam(name = "city", required = false) String city){
+        Collection<VacancyDTO> result;
+        if(name != null || position != null || city != null){
+            result = vacancyService.getFilteredCollectionVacancy(name, position, city);
+        } else  result = vacancyService.getCollectionVacancy();
         return result.isEmpty() ?
                 ResponseEntity.status(HttpStatus.NOT_FOUND).build():
                 ResponseEntity.status(200).body(result);
