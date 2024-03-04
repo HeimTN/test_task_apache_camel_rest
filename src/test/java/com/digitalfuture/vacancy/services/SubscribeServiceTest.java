@@ -5,6 +5,7 @@ import com.digitalfuture.vacancy.obj.Candidate;
 import com.digitalfuture.vacancy.obj.Vacancy;
 import com.digitalfuture.vacancy.repository.CandidateRepository;
 import com.digitalfuture.vacancy.repository.VacancyRepository;
+import com.digitalfuture.vacancy.repository.specification.VacancySpecification;
 import com.digitalfuture.vacancy.services.impl.SubscribeServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -89,7 +90,7 @@ public class SubscribeServiceTest {
         Candidate candidate = new Candidate();
         candidate.setPositionInterest("QA");
         Collection<Vacancy> vacancies = Stream.generate(this::generateRandomVacancy).limit(50).toList();
-        when(vacancyRepository.findVacanciesByPositionName(candidate.getPositionInterest()))
+        when(vacancyRepository.findAll(any(VacancySpecification.class)))
                 .thenReturn(vacancies.stream().filter(vacancy -> vacancy.getPositionName().equals(candidate.getPositionInterest())).collect(Collectors.toList()));
 
         Collection<MailingDTO> result = subscribeService.createMailData(candidate);

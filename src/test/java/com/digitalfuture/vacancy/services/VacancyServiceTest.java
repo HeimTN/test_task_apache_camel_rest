@@ -3,13 +3,18 @@ package com.digitalfuture.vacancy.services;
 import com.digitalfuture.vacancy.dto.VacancyDTO;
 import com.digitalfuture.vacancy.obj.Vacancy;
 import com.digitalfuture.vacancy.repository.VacancyRepository;
+import com.digitalfuture.vacancy.repository.specification.VacancySpecification;
 import com.digitalfuture.vacancy.services.impl.VacancyServiceImpl;
+import com.digitalfuture.vacancy.util.VacancyMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +30,8 @@ import static org.mockito.Mockito.*;
 public class VacancyServiceTest {
     @Mock
     VacancyRepository vacancyRepository;
+    @Spy
+    VacancyMapper vacancyMapper;
     @InjectMocks
     VacancyServiceImpl vacancyService;
 
@@ -46,48 +53,32 @@ public class VacancyServiceTest {
     @Test
     public void testGetFilteredCollectionVacancy_OneFilter(){
         Collection<Vacancy> vacancies = Stream.generate(this::generateRandomVacancy).limit(50).collect(Collectors.toList());
-        when(vacancyRepository.findVacanciesByName("Google")).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getName().equals("Google")).collect(Collectors.toList()));
-        when(vacancyRepository.findVacanciesByPositionName("Data Scientist")).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getPositionName().equals("Data Scientist")).collect(Collectors.toList()));
-        when(vacancyRepository.findVacanciesByCity("Redmond")).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getCity().equals("Redmond")).collect(Collectors.toList()));
-
+        when(vacancyRepository.findAll(any(VacancySpecification.class))).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getName().equals("Google")).collect(Collectors.toList()));
         Collection<VacancyDTO> result = vacancyService.getFilteredCollectionVacancy("Google", null, null);
         Assertions.assertTrue(result.stream().allMatch(vacancyDTO -> vacancyDTO.getName().equals("Google")));
-        verify(vacancyRepository, times(1)).findVacanciesByName(anyString());
-
-        result = vacancyService.getFilteredCollectionVacancy(null, "Data Scientist", null);
-        Assertions.assertTrue(result.stream().allMatch(vacancyDTO -> vacancyDTO.getPositionName().equals("Data Scientist")));
-        verify(vacancyRepository, times(1)).findVacanciesByPositionName(anyString());
-
-        result = vacancyService.getFilteredCollectionVacancy(null, null, "Redmond");
-        Assertions.assertTrue(result.stream().allMatch(vacancyDTO -> vacancyDTO.getCity().equals("Redmond")));
-        verify(vacancyRepository, times(1)).findVacanciesByCity(anyString());
+        verify(vacancyRepository, times(1)).findAll(any(VacancySpecification.class));
     }
 
     @Test
     public void testGetFilteredCollectionVacancy_TwoFilter(){
         Collection<Vacancy> vacancies = Stream.generate(this::generateRandomVacancy).limit(50).collect(Collectors.toList());
-        when(vacancyRepository.findVacanciesByName("Google")).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getName().equals("Google")).collect(Collectors.toList()));
-        when(vacancyRepository.findVacanciesByPositionName("Data Scientist")).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getPositionName().equals("Data Scientist")).collect(Collectors.toList()));
+        when(vacancyRepository.findAll(any(VacancySpecification.class))).thenReturn(vacancies.stream()
+                .filter(vacancy -> vacancy.getName().equals("Google") && vacancy.getPositionName().equals("Data Scientist")).collect(Collectors.toList()));
 
         Collection<VacancyDTO> result = vacancyService.getFilteredCollectionVacancy("Google", "Data Scientist", null);
         Assertions.assertTrue(result.stream().allMatch(vacancyDTO -> vacancyDTO.getName().equals("Google") && vacancyDTO.getPositionName().equals("Data Scientist")));
-
-        verify(vacancyRepository, times(1)).findVacanciesByName(anyString());
-
-        result = vacancyService.getFilteredCollectionVacancy(null, "Data Scientist", "Redmond");
-        Assertions.assertTrue(result.stream().allMatch(vacancyDTO -> vacancyDTO.getCity().equals("Redmond") && vacancyDTO.getPositionName().equals("Data Scientist")));
-        verify(vacancyRepository, times(1)).findVacanciesByPositionName(anyString());
     }
 
     @Test
     public void testGetFilteredCollectionVacancy_TreeFilter(){
         Collection<Vacancy> vacancies = Stream.generate(this::generateRandomVacancy).limit(50).collect(Collectors.toList());
-        when(vacancyRepository.findVacanciesByName("Google")).thenReturn(vacancies.stream().filter(vacancy -> vacancy.getName().equals("Google")).collect(Collectors.toList()));
+        when(vacancyRepository.findAll(any(VacancySpecification.class))).thenReturn(vacancies.stream()
+                .filter(vacancy -> vacancy.getName().equals("Google") && vacancy.getPositionName().equals("Data Scientist") && vacancy.getCity().equals("Redmond")).collect(Collectors.toList()));
 
         Collection<VacancyDTO> result = vacancyService.getFilteredCollectionVacancy("Google", "Data Scientist", "Redmond");
         Assertions.assertTrue(result.stream().allMatch(vacancyDTO -> vacancyDTO.getName().equals("Google") && vacancyDTO.getPositionName().equals("Data Scientist")
                 && vacancyDTO.getCity().equals("Redmond")));
-        verify(vacancyRepository, times(1)).findVacanciesByName(anyString());
+        verify(vacancyRepository, times(1)).findAll(any(VacancySpecification.class));
     }
 
     @Test

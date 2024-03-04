@@ -5,6 +5,7 @@ import com.digitalfuture.vacancy.obj.Candidate;
 import com.digitalfuture.vacancy.obj.Vacancy;
 import com.digitalfuture.vacancy.repository.CandidateRepository;
 import com.digitalfuture.vacancy.repository.VacancyRepository;
+import com.digitalfuture.vacancy.repository.specification.VacancySpecification;
 import com.digitalfuture.vacancy.services.SubscribeService;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     @Override
     public Collection<MailingDTO> createMailData(Candidate candidate){
-        Collection<Vacancy> vacancies = vacancyRepository.findVacanciesByPositionName(candidate.getPositionInterest());
+        Collection<Vacancy> vacancies = vacancyRepository.findAll(new VacancySpecification(null, candidate.getPositionInterest(), null));
         Collection<MailingDTO> result = vacancies.stream().map(vacancy -> {
             MailingDTO temp = new MailingDTO();
             temp.setVacancy(vacancy);

@@ -16,9 +16,11 @@ public class VacancyMapperTest {
     Vacancy vacancy;
     VacancyDTO vacancyDTO;
     Collection<Vacancy> vacancies;
+    VacancyMapper vacancyMapper;
     
     @BeforeEach
     public void start(){
+        vacancyMapper = new VacancyMapper();
         vacancy = new Vacancy();
         vacancy.setName("test");
         vacancy.setCity("monako");
@@ -55,7 +57,7 @@ public class VacancyMapperTest {
     }
     @Test
     public void testMappingVacancyDTOtoVacancy(){
-        Vacancy vacancyTemp = VacancyMapper.mappingVacancyDTOtoVacancy(vacancyDTO);
+        Vacancy vacancyTemp = vacancyMapper.mappingVacancyDTOtoVacancy(vacancyDTO);
         Assertions.assertEquals(vacancyDTO.getName(), vacancyTemp.getName());
         Assertions.assertEquals(vacancyDTO.getCity(), vacancyTemp.getCity());
         Assertions.assertEquals(vacancyDTO.getPositionName(), vacancyTemp.getPositionName());
@@ -66,7 +68,7 @@ public class VacancyMapperTest {
 
     @Test
     public void testMappingVacancyToVacancyDTO(){
-        VacancyDTO vacancyDTOTemp = VacancyMapper.mappingVacancyToVacancyDTO(vacancy);
+        VacancyDTO vacancyDTOTemp = vacancyMapper.mappingVacancyToVacancyDTO(vacancy);
         Assertions.assertEquals(vacancy.getName(), vacancyDTOTemp.getName());
         Assertions.assertEquals(vacancy.getCity(), vacancyDTOTemp.getCity());
         Assertions.assertEquals(vacancy.getPositionName(), vacancyDTOTemp.getPositionName());
@@ -78,7 +80,7 @@ public class VacancyMapperTest {
     @Test
     public void testMappingCollectionVacancyToCollectionVacancyDTO(){
         Random random = new Random();
-        Collection<VacancyDTO> vacancyDTOS = VacancyMapper.mappingCollectionVacancyToCollectionVacancyDTO(vacancies);
+        Collection<VacancyDTO> vacancyDTOS = vacancyMapper.mappingCollectionVacancyToCollectionVacancyDTO(vacancies);
         Assertions.assertEquals(vacancies.size(), vacancyDTOS.size());
 
     }
