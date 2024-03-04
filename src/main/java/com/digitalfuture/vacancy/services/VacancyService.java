@@ -7,7 +7,7 @@ import java.util.Collection;
 public interface VacancyService {
     boolean addVacancy(VacancyDTO vacancyDTO);
 
-    Collection<VacancyDTO> getFilteredCollectionVacancy(String filter, String key);
+    Collection<VacancyDTO> getFilteredCollectionVacancy(String name, String position, String city);
 
     Collection<VacancyDTO> getCollectionVacancy();
 }

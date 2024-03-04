@@ -30,16 +30,22 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public Collection<VacancyDTO> getFilteredCollectionVacancy(String filter, String key) {
-        return switch (filter) {
-            case "name" ->
-                    VacancyMapper.mappingCollectionVacancyToCollectionVacancyDTO(vacancyRepository.findVacanciesByName(key));
-            case "position" ->
-                    VacancyMapper.mappingCollectionVacancyToCollectionVacancyDTO(vacancyRepository.findVacanciesByPositionName(key));
-            case "city" ->
-                    VacancyMapper.mappingCollectionVacancyToCollectionVacancyDTO(vacancyRepository.findVacanciesByCity(key));
-            default -> Collections.EMPTY_LIST;
-        };
+    public Collection<VacancyDTO> getFilteredCollectionVacancy(String name, String position, String city) {
+        Collection<Vacancy> vacancies = Collections.EMPTY_LIST;
+        if(name != null){
+            vacancies = vacancyRepository.findVacanciesByName(name);
+        }
+        if(position != null){
+            if(!vacancies.isEmpty()){
+               vacancies = vacancies.stream().filter(vacancy -> vacancy.getPositionName().equals(position)).toList();
+            } else vacancies = vacancyRepository.findVacanciesByPositionName(position);
+        }
+        if(city != null){
+            if(!vacancies.isEmpty()){
+                vacancies = vacancies.stream().filter(vacancy -> vacancy.getCity().equals(city)).toList();
+            } else vacancies = vacancyRepository.findVacanciesByCity(city);
+        }
+        return VacancyMapper.mappingCollectionVacancyToCollectionVacancyDTO(vacancies);
     }
 
     @Override

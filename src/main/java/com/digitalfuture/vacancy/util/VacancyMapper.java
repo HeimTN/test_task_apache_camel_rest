@@ -2,10 +2,12 @@ package com.digitalfuture.vacancy.util;
 
 import com.digitalfuture.vacancy.dto.VacancyDTO;
 import com.digitalfuture.vacancy.obj.Vacancy;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Component
 public class VacancyMapper {
     public static Vacancy mappingVacancyDTOtoVacancy(VacancyDTO vacancyDTO){
         Vacancy vacancy = new Vacancy();
