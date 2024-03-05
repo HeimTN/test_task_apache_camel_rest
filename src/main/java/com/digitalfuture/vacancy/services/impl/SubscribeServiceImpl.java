@@ -40,7 +40,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     @Override
     public Collection<MailingDTO> createMailData(Candidate candidate){
-        Collection<Vacancy> vacancies = vacancyRepository.findAll(new VacancySpecification(null, candidate.getPositionInterest(), null));
+        Collection<Vacancy> vacancies = vacancyRepository.findAll(VacancySpecification.filteredByPositionName(candidate.getPositionInterest()));
         Collection<MailingDTO> result = vacancies.stream().map(vacancy -> {
             MailingDTO temp = new MailingDTO();
             temp.setVacancy(vacancy);

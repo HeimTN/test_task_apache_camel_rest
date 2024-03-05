@@ -35,4 +35,16 @@ public class VacancySpecification implements Specification<Vacancy> {
 
         return predicate;
     }
+
+    public static Specification<Vacancy> filteredByName(String name){
+        return new VacancySpecification(name, null, null);
+    }
+
+    public static Specification<Vacancy> filteredByPositionName(String positionName){
+        return new VacancySpecification(null, positionName, null);
+    }
+
+    public static Specification<Vacancy> filteredByCity(String city){
+        return new VacancySpecification(null, null, city);
+    }
 }
